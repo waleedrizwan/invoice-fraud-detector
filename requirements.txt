@@ -1,0 +1,11 @@
+pandas==2.3.*
+scikit-learn==1.5.*
+imbalanced-learn==0.13.*
+torch==2.3.*
+torchmetrics==1.4.*
+fastapi==0.111.*
+uvicorn[standard]==0.29.*
+pydantic==2.8.*
+python-dotenv==1.1.*
+pre-commit==3.7.*
+pytest==8.1.*
