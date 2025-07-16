@@ -3,6 +3,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from pathlib import Path
 import pandas as pd
 from utils.metrics import print_metrics
+import json
 
 DATA = Path(__file__).resolve().parents[2] / "data" / "processed"
 MODEL_DIR = Path(__file__).resolve().parents[2] / "models"
@@ -36,10 +37,21 @@ def run(epochs: int = 15, lr: float = 1e-3):
     torch.save(model.state_dict(), MODEL_DIR / "mlp.pt")
     print("✓ saved model")
 
-    # quick evaluation
+    # quick evaluation + threshold tuning
     X_test = torch.tensor(load_split("test_X"), dtype=torch.float32)
     y_test = torch.tensor(load_split("test_y"), dtype=torch.float32).view(-1, 1)
-    print_metrics(model(X_test).detach().numpy(), y_test.numpy())
+    scores = model(X_test).detach().numpy()
+    threshold = print_metrics(scores, y_test.numpy())
+    with open(MODEL_DIR / "threshold.txt", "w") as f:
+        f.write(str(threshold))
+
+    # save feature order for API consumption
+    feature_path = DATA / "feature_order.json"
+    if feature_path.exists():
+        with open(feature_path) as f:
+            feature_order = json.load(f)
+        with open(MODEL_DIR / "feature_order.json", "w") as f:
+            json.dump(feature_order, f)
 
 if __name__ == "__main__":
     run()

@@ -2,6 +2,7 @@ import pandas as pd
 from imblearn.over_sampling import SMOTE
 from sklearn.model_selection import train_test_split
 from pathlib import Path
+import json
 
 RAW = Path(__file__).resolve().parents[2] / "data" / "raw"
 PROCESSED = RAW.parent / "processed"
@@ -22,6 +23,10 @@ def oversample(X, y):
 def run():
     df = load_raw()
     X, y = preprocess(df)
+    feature_order = X.columns.tolist()
+    with open(PROCESSED / "feature_order.json", "w") as f:
+        json.dump(feature_order, f)
+
     X_res, y_res = oversample(X, y)
     X_train, X_test, y_train, y_test = train_test_split(
         X_res, y_res, test_size=0.2, stratify=y_res, random_state=42
