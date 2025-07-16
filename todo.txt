@@ -1,5 +1,0 @@
-Finish FEATURE_ORDER list in app.py
-ETL + baseline model train without errors;
-threshold tuning
-SHAP explainability
-Prometheus hooks 
